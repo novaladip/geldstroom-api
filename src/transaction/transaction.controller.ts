@@ -1,4 +1,21 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { TransactionService } from './transaction.service';
+import { Transaction } from './transaction.entity';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Controller('transaction')
-export class TransactionController {}
+export class TransactionController {
+  constructor(private readonly transactionService: TransactionService) {}
+
+  @Get()
+  getTransactions(): Promise<Transaction[]> {
+    return this.transactionService.getTranscations();
+  }
+
+  @Post()
+  createTransaction(
+    @Body() createTransactionDto: CreateTransactionDto,
+  ): Promise<Transaction> {
+    return this.transactionService.createTransaction(createTransactionDto);
+  }
+}
