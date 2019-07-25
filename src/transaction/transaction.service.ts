@@ -1,9 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Injectable()
 export class TransactionService {
@@ -22,5 +28,15 @@ export class TransactionService {
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionRepository.createTransaction(createTransactionDto);
+  }
+
+  async updateTransactionById(
+    id: number,
+    updateTransactionDto: UpdateTransactionDto,
+  ): Promise<Transaction> {
+    return this.transactionRepository.updateTransactionById(
+      id,
+      updateTransactionDto,
+    );
   }
 }

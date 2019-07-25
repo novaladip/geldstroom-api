@@ -1,8 +1,13 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Logger,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -30,5 +35,23 @@ export class TransactionRepository extends Repository<Transaction> {
       );
       throw new InternalServerErrorException();
     }
+  }
+
+  async updateTransactionById(
+    id: number,
+    updateTransactionDto: UpdateTransactionDto,
+  ) {
+    const { amount, category, type, description } = updateTransactionDto;
+    const transaction = await this.findOne(id);
+    if (!transaction) {
+      throw new NotFoundException(`Transaction with ID ${id} not found `);
+    }
+    transaction.amount = amount;
+    transaction.category = category;
+    transaction.type = type;
+    transaction.description = description;
+    transaction.updatedAt = new Date();
+    await transaction.save();
+    return transaction;
   }
 }
