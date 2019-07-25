@@ -1,4 +1,5 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
 import { TransactionCategory } from './transaction-category.enum';
 import { TransactionType } from './transaction-type.enum';
 
@@ -14,11 +15,14 @@ export class Transaction extends BaseEntity {
   category: TransactionCategory;
 
   @Column()
-  description: string;
+  type: TransactionType;
 
-  @Column()
+  @Column({ readonly: true })
   createdAt: Date;
 
-  @Column()
-  type: TransactionType;
+  @Column({ nullable: true })
+  updatedAt: Date;
+
+  @Column({ nullable: true })
+  description: string;
 }

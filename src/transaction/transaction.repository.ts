@@ -12,12 +12,13 @@ export class TransactionRepository extends Repository<Transaction> {
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
     try {
-      const { amount, description, category } = createTransactionDto;
+      const { amount, description, category, type } = createTransactionDto;
       const transaction = new Transaction();
-      transaction.amount = amount;
+      transaction.amount = parseInt(amount);
       transaction.category = category;
       transaction.description = description;
       transaction.createdAt = new Date();
+      transaction.type = type;
       await transaction.save();
       return transaction;
     } catch (error) {
