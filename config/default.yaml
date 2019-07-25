@@ -1,0 +1,10 @@
+server:
+  port: 5000
+
+db:
+  type: 'postgres'
+  port: 5432
+  database: 'geldstroom'
+
+jwt:
+  expiresIn: 360000    
