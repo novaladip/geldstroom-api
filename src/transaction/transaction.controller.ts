@@ -21,6 +21,13 @@ export class TransactionController {
     return this.transactionService.getTranscations();
   }
 
+  @Get('/:id')
+  getTransactionById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Transaction> {
+    return this.transactionService.getTransactionById(id);
+  }
+
   @Post()
   createTransaction(
     @Body() createTransactionDto: CreateTransactionDto,
