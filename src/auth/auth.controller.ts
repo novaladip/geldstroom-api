@@ -2,6 +2,7 @@ import { Controller, Post, Body, Inject, Get, UseGuards } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -12,9 +13,8 @@ export class AuthController {
     return this.authService.registerUser(registerDto);
   }
 
-  @UseGuards(AuthGuard())
-  @Get()
-  test() {
-    return 'dddd';
+  @Post('/login')
+  loginUser(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
+    return this.authService.loginUser(loginDto);
   }
 }
