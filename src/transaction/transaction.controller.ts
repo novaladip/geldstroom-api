@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
@@ -44,5 +45,10 @@ export class TransactionController {
       id,
       updateTransactionDto,
     );
+  }
+
+  @Delete('/:id')
+  deleteTransactionById(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.transactionService.deleteTransactionById(id);
   }
 }
