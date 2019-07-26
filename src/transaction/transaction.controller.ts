@@ -30,9 +30,10 @@ export class TransactionController {
 
   @Get('/:id')
   getTransactionById(
+    @GetUser() user: JwtPayload,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Transaction> {
-    return this.transactionService.getTransactionById(id);
+    return this.transactionService.getTransactionById(id, user);
   }
 
   @Post()

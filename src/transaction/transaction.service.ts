@@ -20,11 +20,15 @@ export class TransactionService {
     return this.transactionRepository.getTransactions(user);
   }
 
-  async getTransactionById(id: number): Promise<Transaction> {
-    const transaction = await this.transactionRepository.findOne(id);
+  async getTransactionById(id: number, user: JwtPayload): Promise<Transaction> {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: id, userId: user.id },
+    });
+
     if (!transaction) {
       throw new NotFoundException(`Transaction with ID ${id} not found`);
     }
+
     return transaction;
   }
 
