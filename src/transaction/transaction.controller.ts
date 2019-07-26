@@ -8,6 +8,8 @@ import {
   ParseIntPipe,
   Delete,
   UseGuards,
+  Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -17,6 +19,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { GetUser } from '../decorator/get-user.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
+import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
 
 @UseGuards(AuthGuard())
 @Controller('transaction')
@@ -24,8 +27,14 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Get()
-  getTransactions(@GetUser() user: JwtPayload): Promise<Transaction[]> {
-    return this.transactionService.getTranscations(user);
+  getTransactions(
+    @GetUser() user: JwtPayload,
+    @Query(ValidationPipe) getTransactionsFilterDto: GetTransactionsFilterDto,
+  ): Promise<Transaction[]> {
+    return this.transactionService.getTranscations(
+      user,
+      getTransactionsFilterDto,
+    );
   }
 
   @Get('/:id')
