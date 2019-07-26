@@ -1,23 +1,54 @@
-import { Repository, EntityRepository } from 'typeorm';
-import {
-  Logger,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Logger, InternalServerErrorException } from '@nestjs/common';
+import { Repository, EntityRepository, Between } from 'typeorm';
+import * as moment from 'moment';
 
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtPayload } from '../auth/jwt-payload.interface';
+import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('TransactionRepository');
 
-  async getTransactions(user: JwtPayload): Promise<Transaction[]> {
+  async getTransactions(
+    user: JwtPayload,
+    getTransactionsFilterDto: GetTransactionsFilterDto,
+  ): Promise<Transaction[]> {
+    let startDate: Date | string;
+    let endDate: Date | string;
+    const { date, category, type, isMonthly } = getTransactionsFilterDto;
+    const limit = getTransactionsFilterDto.limit
+      ? parseInt(getTransactionsFilterDto.limit)
+      : 10;
+    const page = getTransactionsFilterDto.page
+      ? parseInt(getTransactionsFilterDto.page)
+      : 1;
+
+    [startDate, endDate] = this.getOneDayRange(new Date(date));
     const query = this.createQueryBuilder('transaction');
 
+    if (isMonthly) {
+      [startDate, endDate] = this.getOneMonthRange(new Date(date));
+    }
+
+    if (category) {
+      query.andWhere('transaction.category = :category', { category });
+    }
+
+    if (type) {
+      query.andWhere('transaction.type = :type', { type });
+    }
+
+    query.andWhere('transaction.createdAt BETWEEN :startDate AND :endDate', {
+      startDate,
+      endDate,
+    });
+
     query.where('transaction.userId = :userId', { userId: user.id });
+
+    query.take(limit);
+    query.skip(limit * (page - 1));
 
     try {
       const transactions = await query.getMany();
@@ -55,5 +86,24 @@ export class TransactionRepository extends Repository<Transaction> {
       );
       throw new InternalServerErrorException();
     }
+  }
+
+  private getOneDayRange(date: Date): Date[] {
+    return [
+      new Date(new Date(date).setUTCHours(24, 0, 0, 0)),
+      new Date(new Date(date).setUTCHours(47, 59, 59, 59)),
+    ];
+  }
+
+  private getOneMonthRange(date: Date): string[] {
+    const firstDay = moment
+      .utc(date)
+      .startOf('month')
+      .format();
+    const lastDay = moment
+      .utc(date)
+      .endOf('month')
+      .format();
+    return [firstDay, lastDay];
   }
 }

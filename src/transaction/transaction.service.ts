@@ -6,6 +6,7 @@ import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { JwtPayload } from '../auth/jwt-payload.interface';
+import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
 
 @Injectable()
 export class TransactionService {
@@ -16,8 +17,14 @@ export class TransactionService {
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  async getTranscations(user: JwtPayload): Promise<Transaction[]> {
-    return this.transactionRepository.getTransactions(user);
+  async getTranscations(
+    user: JwtPayload,
+    getTransactionsFilterDto: GetTransactionsFilterDto,
+  ): Promise<Transaction[]> {
+    return this.transactionRepository.getTransactions(
+      user,
+      getTransactionsFilterDto,
+    );
   }
 
   async getTransactionById(id: number, user: JwtPayload): Promise<Transaction> {
