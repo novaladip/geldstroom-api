@@ -10,6 +10,8 @@ import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { User } from '../auth/user.entity';
+import { JwtPayload } from 'src/auth/jwt-payload.interface';
 
 @Injectable()
 export class TransactionService {
@@ -20,8 +22,8 @@ export class TransactionService {
     private readonly transactionRepository: TransactionRepository,
   ) {}
 
-  async getTranscations(): Promise<Transaction[]> {
-    return this.transactionRepository.find();
+  async getTranscations(user: JwtPayload): Promise<Transaction[]> {
+    return this.transactionRepository.getTransactions(user);
   }
 
   async getTransactionById(id: number): Promise<Transaction> {

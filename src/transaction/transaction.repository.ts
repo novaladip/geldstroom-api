@@ -8,10 +8,28 @@ import {
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
   private logger = new Logger('TransactionRepository');
+
+  async getTransactions(user: JwtPayload): Promise<Transaction[]> {
+    const query = this.createQueryBuilder('transaction');
+
+    query.where('transaction.userId = :userId', { userId: user.id });
+
+    try {
+      const transactions = await query.getMany();
+      return transactions;
+    } catch (error) {
+      this.logger.error(
+        `Failed to get transactions for user "${user.email}"`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
+  }
 
   async createTransaction(
     createTransactionDto: CreateTransactionDto,

@@ -33,6 +33,11 @@ export class Transaction extends BaseEntity {
   @Column({ nullable: true })
   description: string;
 
-  @ManyToOne(type => User, user => user.transaction, { eager: false })
+  @ManyToOne(type => User, user => user.transaction, {
+    eager: false,
+  })
   user: User;
+
+  @Column({ nullable: false })
+  userId: number;
 }

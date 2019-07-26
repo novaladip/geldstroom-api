@@ -25,8 +25,7 @@ export class TransactionController {
 
   @Get()
   getTransactions(@GetUser() user: JwtPayload): Promise<Transaction[]> {
-    console.log(user);
-    return this.transactionService.getTranscations();
+    return this.transactionService.getTranscations(user);
   }
 
   @Get('/:id')
