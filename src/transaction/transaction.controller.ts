@@ -9,11 +9,14 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../decorator/get-user.decorator';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 @UseGuards(AuthGuard())
 @Controller('transaction')
@@ -21,7 +24,8 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Get()
-  getTransactions(): Promise<Transaction[]> {
+  getTransactions(@GetUser() user: JwtPayload): Promise<Transaction[]> {
+    console.log(user);
     return this.transactionService.getTranscations();
   }
 
