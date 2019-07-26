@@ -1,7 +1,14 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  BaseEntity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+} from 'typeorm';
 
 import { TransactionCategory } from './transaction-category.enum';
 import { TransactionType } from './transaction-type.enum';
+import { User } from '../auth/user.entity';
 
 @Entity()
 export class Transaction extends BaseEntity {
@@ -25,4 +32,7 @@ export class Transaction extends BaseEntity {
 
   @Column({ nullable: true })
   description: string;
+
+  @ManyToOne(type => User, user => user.transaction, { eager: false })
+  user: User;
 }
