@@ -9,11 +9,14 @@ import {
   Delete,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { TransactionService } from './transaction.service';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from '../decorator/get-user.decorator';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 @UseGuards(AuthGuard())
 @Controller('transaction')
@@ -21,37 +24,47 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Get()
-  getTransactions(): Promise<Transaction[]> {
-    return this.transactionService.getTranscations();
+  getTransactions(@GetUser() user: JwtPayload): Promise<Transaction[]> {
+    return this.transactionService.getTranscations(user);
   }
 
   @Get('/:id')
   getTransactionById(
+    @GetUser() user: JwtPayload,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Transaction> {
-    return this.transactionService.getTransactionById(id);
+    return this.transactionService.getTransactionById(id, user);
   }
 
   @Post()
   createTransaction(
+    @GetUser() user: JwtPayload,
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
-    return this.transactionService.createTransaction(createTransactionDto);
+    return this.transactionService.createTransaction(
+      createTransactionDto,
+      user,
+    );
   }
 
   @Put('/:id')
   updateTransactionById(
+    @GetUser() user: JwtPayload,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionService.updateTransactionById(
       id,
       updateTransactionDto,
+      user,
     );
   }
 
   @Delete('/:id')
-  deleteTransactionById(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.transactionService.deleteTransactionById(id);
+  deleteTransactionById(
+    @GetUser() user: JwtPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.transactionService.deleteTransactionById(id, user);
   }
 }

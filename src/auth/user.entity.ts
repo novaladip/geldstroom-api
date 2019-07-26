@@ -1,4 +1,11 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+} from 'typeorm';
+import { Transaction } from '../transaction/transaction.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -13,4 +20,9 @@ export class User extends BaseEntity {
 
   @Column({ nullable: false })
   joinDate: Date;
+
+  @OneToMany(type => Transaction, transaction => transaction.user, {
+    eager: true,
+  })
+  transaction: Transaction[];
 }
