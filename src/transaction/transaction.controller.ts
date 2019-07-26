@@ -61,7 +61,10 @@ export class TransactionController {
   }
 
   @Delete('/:id')
-  deleteTransactionById(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.transactionService.deleteTransactionById(id);
+  deleteTransactionById(
+    @GetUser() user: JwtPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<void> {
+    return this.transactionService.deleteTransactionById(id, user);
   }
 }

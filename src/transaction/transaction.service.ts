@@ -58,8 +58,11 @@ export class TransactionService {
     return transaction;
   }
 
-  async deleteTransactionById(id: number): Promise<void> {
-    const result = await this.transactionRepository.delete(id);
+  async deleteTransactionById(id: number, user: JwtPayload): Promise<void> {
+    const result = await this.transactionRepository.delete({
+      id,
+      userId: user.id,
+    });
 
     if (result.affected === 0) {
       throw new NotFoundException(`Transaction with ID ${id} not found`);
