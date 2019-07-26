@@ -49,12 +49,14 @@ export class TransactionController {
 
   @Put('/:id')
   updateTransactionById(
+    @GetUser() user: JwtPayload,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionService.updateTransactionById(
       id,
       updateTransactionDto,
+      user,
     );
   }
 

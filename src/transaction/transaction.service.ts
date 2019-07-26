@@ -45,11 +45,17 @@ export class TransactionService {
   async updateTransactionById(
     id: number,
     updateTransactionDto: UpdateTransactionDto,
+    user: JwtPayload,
   ): Promise<Transaction> {
-    return this.transactionRepository.updateTransactionById(
-      id,
-      updateTransactionDto,
-    );
+    const { amount, type, description, category } = updateTransactionDto;
+    const transaction = await this.getTransactionById(id, user);
+    transaction.amount = amount;
+    transaction.type = type;
+    transaction.description = description;
+    transaction.category = category;
+    transaction.updatedAt = new Date();
+    await transaction.save();
+    return transaction;
   }
 
   async deleteTransactionById(id: number): Promise<void> {
