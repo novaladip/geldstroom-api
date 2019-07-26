@@ -33,6 +33,7 @@ export class TransactionRepository extends Repository<Transaction> {
 
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
+    user: JwtPayload,
   ): Promise<Transaction> {
     try {
       const { amount, description, category, type } = createTransactionDto;
@@ -42,6 +43,7 @@ export class TransactionRepository extends Repository<Transaction> {
       transaction.description = description;
       transaction.createdAt = new Date();
       transaction.type = type;
+      transaction.userId = user.id;
       await transaction.save();
       return transaction;
     } catch (error) {

@@ -1,17 +1,11 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { TransactionRepository } from './transaction.repository';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { User } from '../auth/user.entity';
-import { JwtPayload } from 'src/auth/jwt-payload.interface';
+import { JwtPayload } from '../auth/jwt-payload.interface';
 
 @Injectable()
 export class TransactionService {
@@ -36,8 +30,12 @@ export class TransactionService {
 
   async createTransaction(
     createTransactionDto: CreateTransactionDto,
+    user: JwtPayload,
   ): Promise<Transaction> {
-    return this.transactionRepository.createTransaction(createTransactionDto);
+    return this.transactionRepository.createTransaction(
+      createTransactionDto,
+      user,
+    );
   }
 
   async updateTransactionById(

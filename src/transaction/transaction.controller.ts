@@ -37,9 +37,13 @@ export class TransactionController {
 
   @Post()
   createTransaction(
+    @GetUser() user: JwtPayload,
     @Body() createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
-    return this.transactionService.createTransaction(createTransactionDto);
+    return this.transactionService.createTransaction(
+      createTransactionDto,
+      user,
+    );
   }
 
   @Put('/:id')
