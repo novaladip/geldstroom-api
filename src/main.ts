@@ -14,6 +14,7 @@ async function bootstrap() {
     .setDescription('The Geldstroom API documentation')
     .setVersion('0.1')
     .addBearerAuth('Authorization', 'header')
+    .setSchemes('https')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
