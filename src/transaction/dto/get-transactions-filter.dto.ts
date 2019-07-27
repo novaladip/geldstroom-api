@@ -17,7 +17,6 @@ export enum IsMonthly {
 
 export class GetTransactionsFilterDto {
   @IsString()
-  @IsOptional()
   @IsNotEmpty()
   @Matches(/([12]\d{3}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01]))/, {
     message: 'date format must be YYYY/MM/DD',
@@ -37,14 +36,17 @@ export class GetTransactionsFilterDto {
 
   @Type(() => Number)
   @IsOptional()
+  @IsNotEmpty()
   @IsEnum(IsMonthly)
   isMonthly: number;
 
   @IsNumberString()
+  @IsNotEmpty()
   @IsOptional()
   page: string;
 
   @IsNumberString()
+  @IsNotEmpty()
   @IsOptional()
   limit: string;
 }
