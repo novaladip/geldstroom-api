@@ -19,6 +19,6 @@ async function bootstrap() {
       max: 100, // limit each IP to 100 requests per windowMs
     }),
   );
-  await app.listen(serverConfig.port);
+  await app.listen(process.env.PORT || serverConfig.port);
 }
 bootstrap();
