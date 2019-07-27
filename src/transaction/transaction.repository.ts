@@ -6,6 +6,8 @@ import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { JwtPayload } from '../auth/jwt-payload.interface';
 import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
+import { GetTotalTransactionsFilterDto } from './dto/get-total-trasactions-filter.dto';
+import { TransactionType } from './transaction-type.enum';
 
 @EntityRepository(Transaction)
 export class TransactionRepository extends Repository<Transaction> {
@@ -86,6 +88,56 @@ export class TransactionRepository extends Repository<Transaction> {
       );
       throw new InternalServerErrorException();
     }
+  }
+
+  async getTotalTransactions(
+    user: JwtPayload,
+    getTotalTransactionsFilterDto: GetTotalTransactionsFilterDto,
+  ): Promise<{ INCOME: number | null; EXPENSE: number | null }[]> {
+    const totalIncome = this.getTotalAmount(
+      user.id,
+      getTotalTransactionsFilterDto,
+      TransactionType.INCOME,
+    );
+    const totalExpense = this.getTotalAmount(
+      user.id,
+      getTotalTransactionsFilterDto,
+      TransactionType.EXPENSE,
+    );
+    return await Promise.all([totalIncome, totalExpense]);
+  }
+
+  private getTotalAmount(
+    userId: string,
+    getTotalTransactionsFilterDto: GetTotalTransactionsFilterDto,
+    type: TransactionType,
+  ) {
+    const { date, isMonthly, category } = getTotalTransactionsFilterDto;
+    const [startDate, endDate] =
+      isMonthly == 1
+        ? this.getOneMonthRange(new Date(date))
+        : this.getOneDayRange(new Date(date));
+
+    console.log(startDate, endDate);
+
+    const query = this.createQueryBuilder('transaction');
+    query
+      .select('SUM(transaction.amount)', type)
+      .where('transaction.userId = :userId', { userId })
+      .andWhere('transaction.createdAt BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      });
+
+    if (category) {
+      query.andWhere('transaction.category = :category', { category });
+    }
+
+    if (type) {
+      query.andWhere('transaction.type = :type', { type });
+    }
+
+    return query.getRawOne();
   }
 
   private getOneDayRange(date: Date): Date[] {

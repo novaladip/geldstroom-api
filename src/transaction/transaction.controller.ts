@@ -19,6 +19,7 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { GetUser } from '../decorator/get-user.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
 import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
+import { GetTotalTransactionsFilterDto } from './dto/get-total-trasactions-filter.dto';
 
 @UseGuards(AuthGuard())
 @Controller('transaction')
@@ -44,6 +45,18 @@ export class TransactionController {
     return this.transactionService.getTransactionById(id, user);
   }
 
+  @Get('/total/amount')
+  getTotalTransactions(
+    @GetUser() user: JwtPayload,
+    @Query(ValidationPipe)
+    getTotalTransactionsFilterDto: GetTotalTransactionsFilterDto,
+  ) {
+    return this.transactionService.getTotalTransactions(
+      user,
+      getTotalTransactionsFilterDto,
+    );
+  }
+
   @Post()
   createTransaction(
     @GetUser() user: JwtPayload,
@@ -59,11 +72,11 @@ export class TransactionController {
   updateTransactionById(
     @GetUser() user: JwtPayload,
     @Param('id') id: string,
-    @Body() updateTransactionDto: UpdateTransactionDto,
+    @Body() updateTransactionsDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionService.updateTransactionById(
       id,
-      updateTransactionDto,
+      updateTransactionsDto,
       user,
     );
   }
