@@ -20,12 +20,18 @@ import { GetUser } from '../decorator/get-user.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
 import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
 import { GetTotalTransactionsFilterDto } from './dto/get-total-trasactions-filter.dto';
+import { ApiUseTags, ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
+import { TransactionResponseDto } from './dto/transaction-response.dto';
+import { GetTotalTransactionsReponseDto } from './dto/get-total-transactions-response.dto';
 
+@ApiBearerAuth()
+@ApiUseTags('Transaction')
 @UseGuards(AuthGuard())
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
+  @ApiOkResponse({ type: TransactionResponseDto, isArray: true })
   @Get()
   getTransactions(
     @GetUser() user: JwtPayload,
@@ -37,6 +43,7 @@ export class TransactionController {
     );
   }
 
+  @ApiOkResponse({ type: TransactionResponseDto })
   @Get('/:id')
   getTransactionById(
     @GetUser() user: JwtPayload,
@@ -45,6 +52,7 @@ export class TransactionController {
     return this.transactionService.getTransactionById(id, user);
   }
 
+  @ApiOkResponse({ type: GetTotalTransactionsReponseDto })
   @Get('/total/amount')
   getTotalTransactions(
     @GetUser() user: JwtPayload,
@@ -57,6 +65,7 @@ export class TransactionController {
     );
   }
 
+  @ApiOkResponse({ type: TransactionResponseDto })
   @Post()
   createTransaction(
     @GetUser() user: JwtPayload,
@@ -68,6 +77,7 @@ export class TransactionController {
     );
   }
 
+  @ApiOkResponse({ type: TransactionResponseDto })
   @Put('/:id')
   updateTransactionById(
     @GetUser() user: JwtPayload,
