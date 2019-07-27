@@ -1,12 +1,17 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import * as helmet from 'helmet';
+
 import { AppModule } from './app.module';
 import * as config from 'config';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
   const serverConfig = config.get('server');
+
+  app.use(helmet());
+  app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
   await app.listen(serverConfig.port);
 }
 bootstrap();
