@@ -12,8 +12,8 @@ import { User } from '../auth/user.entity';
 
 @Entity()
 export class Transaction extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   amount: number;
@@ -39,5 +39,5 @@ export class Transaction extends BaseEntity {
   user: User;
 
   @Column({ nullable: false })
-  userId: number;
+  userId: string;
 }

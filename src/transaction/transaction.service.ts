@@ -27,7 +27,7 @@ export class TransactionService {
     );
   }
 
-  async getTransactionById(id: number, user: JwtPayload): Promise<Transaction> {
+  async getTransactionById(id: string, user: JwtPayload): Promise<Transaction> {
     const transaction = await this.transactionRepository.findOne({
       where: { id: id, userId: user.id },
     });
@@ -50,7 +50,7 @@ export class TransactionService {
   }
 
   async updateTransactionById(
-    id: number,
+    id: string,
     updateTransactionDto: UpdateTransactionDto,
     user: JwtPayload,
   ): Promise<Transaction> {
@@ -65,7 +65,7 @@ export class TransactionService {
     return transaction;
   }
 
-  async deleteTransactionById(id: number, user: JwtPayload): Promise<void> {
+  async deleteTransactionById(id: string, user: JwtPayload): Promise<void> {
     const result = await this.transactionRepository.delete({
       id,
       userId: user.id,

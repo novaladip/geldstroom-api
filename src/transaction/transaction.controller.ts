@@ -5,7 +5,6 @@ import {
   Body,
   Put,
   Param,
-  ParseIntPipe,
   Delete,
   UseGuards,
   Query,
@@ -40,7 +39,7 @@ export class TransactionController {
   @Get('/:id')
   getTransactionById(
     @GetUser() user: JwtPayload,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<Transaction> {
     return this.transactionService.getTransactionById(id, user);
   }
@@ -59,7 +58,7 @@ export class TransactionController {
   @Put('/:id')
   updateTransactionById(
     @GetUser() user: JwtPayload,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     return this.transactionService.updateTransactionById(
@@ -72,7 +71,7 @@ export class TransactionController {
   @Delete('/:id')
   deleteTransactionById(
     @GetUser() user: JwtPayload,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
   ): Promise<void> {
     return this.transactionService.deleteTransactionById(id, user);
   }

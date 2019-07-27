@@ -28,7 +28,13 @@ export class TransactionRepository extends Repository<Transaction> {
     [startDate, endDate] = this.getOneDayRange(new Date(date));
     const query = this.createQueryBuilder('transaction');
 
-    if (isMonthly) {
+    query.where('transaction.userId = :userId', { userId: user.id });
+    query.andWhere('transaction.createdAt BETWEEN :startDate AND :endDate', {
+      startDate,
+      endDate,
+    });
+
+    if (isMonthly === 1) {
       [startDate, endDate] = this.getOneMonthRange(new Date(date));
     }
 
@@ -40,15 +46,9 @@ export class TransactionRepository extends Repository<Transaction> {
       query.andWhere('transaction.type = :type', { type });
     }
 
-    query.andWhere('transaction.createdAt BETWEEN :startDate AND :endDate', {
-      startDate,
-      endDate,
-    });
-
-    query.where('transaction.userId = :userId', { userId: user.id });
-
     query.take(limit);
     query.skip(limit * (page - 1));
+    query.orderBy('transaction.createdAt', 'DESC');
 
     try {
       const transactions = await query.getMany();
