@@ -1,5 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Logger,
+  InternalServerErrorException,
+  BadRequestException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
 import { User } from './user.entity';
@@ -22,6 +26,13 @@ export class UserRepository extends Repository<User> {
         `Failed to registering user with data: ${JSON.stringify(registerDto)}`,
         error.stack,
       );
+      if (error.code === '23505') {
+        throw new BadRequestException({
+          message: 'Email is already exist',
+          error: error.detail,
+        });
+      }
+
       throw new InternalServerErrorException();
     }
   }

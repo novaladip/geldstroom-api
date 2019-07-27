@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { TransactionType } from '../transaction-type.enum';
 import { TransactionCategory } from '../transaction-category.enum';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 
 export enum IsMonthly {
   TRUE = 1,

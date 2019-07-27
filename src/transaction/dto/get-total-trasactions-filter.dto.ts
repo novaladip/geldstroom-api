@@ -1,6 +1,6 @@
 import { IsOptional, IsNotEmpty, Matches, IsEnum } from 'class-validator';
 import { TransactionCategory } from '../transaction-category.enum';
-import { Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 
 export enum IsMonthly {
   TRUE = 1,
@@ -19,7 +19,7 @@ export class GetTotalTransactionsFilterDto {
   @IsNotEmpty()
   category: TransactionCategory;
 
-  @Type(() => Number)
+  @Transform(value => Number(value))
   @IsEnum(IsMonthly)
   isMonthly: number;
 }

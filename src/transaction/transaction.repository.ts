@@ -5,7 +5,10 @@ import * as moment from 'moment';
 import { Transaction } from './transaction.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { JwtPayload } from '../auth/jwt-payload.interface';
-import { GetTransactionsFilterDto } from './dto/get-transactions-filter.dto';
+import {
+  GetTransactionsFilterDto,
+  IsMonthly,
+} from './dto/get-transactions-filter.dto';
 import { GetTotalTransactionsFilterDto } from './dto/get-total-trasactions-filter.dto';
 import { TransactionType } from './transaction-type.enum';
 
@@ -27,7 +30,11 @@ export class TransactionRepository extends Repository<Transaction> {
       ? parseInt(getTransactionsFilterDto.page)
       : 1;
 
-    [startDate, endDate] = this.getOneDayRange(new Date(date));
+    [startDate, endDate] =
+      isMonthly == IsMonthly.TRUE
+        ? this.getOneMonthRange(new Date(date))
+        : this.getOneDayRange(new Date(date));
+
     const query = this.createQueryBuilder('transaction');
 
     query.where('transaction.userId = :userId', { userId: user.id });
@@ -35,10 +42,6 @@ export class TransactionRepository extends Repository<Transaction> {
       startDate,
       endDate,
     });
-
-    if (isMonthly === 1) {
-      [startDate, endDate] = this.getOneMonthRange(new Date(date));
-    }
 
     if (category) {
       query.andWhere('transaction.category = :category', { category });
@@ -48,8 +51,10 @@ export class TransactionRepository extends Repository<Transaction> {
       query.andWhere('transaction.type = :type', { type });
     }
 
-    query.take(limit);
-    query.skip(limit * (page - 1));
+    if (limit > 0) {
+      query.take(limit);
+      query.skip(limit * (page - 1));
+    }
     query.orderBy('transaction.createdAt', 'DESC');
 
     try {
