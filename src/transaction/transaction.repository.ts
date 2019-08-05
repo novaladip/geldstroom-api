@@ -32,8 +32,8 @@ export class TransactionRepository extends Repository<Transaction> {
 
     [startDate, endDate] =
       isMonthly == IsMonthly.TRUE
-        ? this.getOneMonthRange(new Date(date))
-        : this.getOneDayRange(new Date(date));
+        ? this.getOneMonthRange(date)
+        : this.getOneDayRange(date);
 
     const query = this.createQueryBuilder('transaction');
 
@@ -119,11 +119,7 @@ export class TransactionRepository extends Repository<Transaction> {
   ) {
     const { date, isMonthly, category } = getTotalTransactionsFilterDto;
     const [startDate, endDate] =
-      isMonthly == 1
-        ? this.getOneMonthRange(new Date(date))
-        : this.getOneDayRange(new Date(date));
-
-    console.log(startDate, endDate);
+      isMonthly == 1 ? this.getOneMonthRange(date) : this.getOneDayRange(date);
 
     const query = this.createQueryBuilder('transaction');
     query
@@ -145,22 +141,24 @@ export class TransactionRepository extends Repository<Transaction> {
     return query.getRawOne();
   }
 
-  private getOneDayRange(date: Date): Date[] {
+  private getOneDayRange(date: string): Date[] {
+    const startDate = moment.utc(date, 'YYYY/MM/DD').startOf('days');
+    const endDate = moment.utc(date, 'YYYY/MM/DD').endOf('days');
     return [
-      new Date(new Date(date).setUTCHours(24, 0, 0, 0)),
-      new Date(new Date(date).setUTCHours(47, 59, 59, 59)),
+      new Date(new Date(startDate.format())),
+      new Date(new Date(endDate.format())),
     ];
   }
 
-  private getOneMonthRange(date: Date): string[] {
+  private getOneMonthRange(date: string): Date[] {
     const firstDay = moment
-      .utc(date)
+      .utc(date, 'YYYY/MM/DD')
       .startOf('month')
       .format();
     const lastDay = moment
-      .utc(date)
+      .utc(date, 'YYYY/MM/DD')
       .endOf('month')
       .format();
-    return [firstDay, lastDay];
+    return [new Date(firstDay), new Date(lastDay)];
   }
 }
