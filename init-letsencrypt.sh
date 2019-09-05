@@ -1,6 +1,6 @@
 #!/bin/bash
 
-domains=(geldstroom.com www.geldstroom.com)
+domains=(geldstroom.xyz www.geldstroom.xyz)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="a.novaladip@yahoo.com" # Adding a valid address is strongly recommended

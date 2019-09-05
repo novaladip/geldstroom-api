@@ -2,3 +2,7 @@ db:
   synchronize: false
   # ssl: true
   host: 'db'
+  username: 'postgres'
+  password: 'getshitdone'
+jwt:
+  secret: 'justsometest'
