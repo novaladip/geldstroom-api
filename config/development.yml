@@ -1,9 +1,8 @@
 db:
-  host: 'localhost'
+  host: 'db'
   username: 'postgres'
   password: 'getshitdone'
   synchronize: true
-  ssl: false
 
 jwt:
   secret: 'ez4ence'

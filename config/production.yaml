@@ -1,3 +1,4 @@
 db:
   synchronize: false
-  ssl: true
+  # ssl: true
+  host: 'db'
