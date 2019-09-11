@@ -21,12 +21,10 @@ services:
       POSTGRES_DB: geldstroom
     ports: 
       - '5432:5432' 
-    volumes:
-     - './db'     
 
   nginx:
     container_name: nginx
-    image: nginx
+    image: nginx:1.15-alpine
     volumes:
       - ./data/nginx:/etc/nginx/conf.d
       - ./data/certbot/conf:/etc/letsencrypt
