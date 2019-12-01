@@ -1,5 +1,5 @@
 db:
-  synchronize: false
+  synchronize: true
   # ssl: true
   host: 'db'
   username: 'postgres'

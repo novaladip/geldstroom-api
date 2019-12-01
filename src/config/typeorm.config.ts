@@ -13,4 +13,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   ssl: dbConfig.tls,
   synchronize: dbConfig.synchronize,
+  autoReconnect: true,
 };
