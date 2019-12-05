@@ -21,6 +21,9 @@ export class User extends BaseEntity {
   @Column({ nullable: false })
   joinDate: Date;
 
+  @Column({ default: false })
+  isVerified: boolean;
+
   @OneToMany(type => Transaction, transaction => transaction.user, {
     eager: true,
   })

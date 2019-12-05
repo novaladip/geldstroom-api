@@ -3,6 +3,8 @@ import * as config from 'config';
 
 const dbConfig = config.get('db');
 
+console.log(dbConfig.password);
+
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,
   host: process.env.DB_HOST || dbConfig.host,

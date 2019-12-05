@@ -1,7 +1,8 @@
 db:
-  host: 'db'
+  host: 'localhost'
+  port: 5433,
   username: 'postgres'
-  password: 'getshitdone'
+  password: 'admin'
   synchronize: true
 
 jwt:

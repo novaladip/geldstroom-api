@@ -1,13 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
-import {
-  Logger,
-  InternalServerErrorException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Logger, InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
+import { EmailAlreadyTaken } from '../core';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -27,10 +24,7 @@ export class UserRepository extends Repository<User> {
         error.stack,
       );
       if (error.code === '23505') {
-        throw new BadRequestException({
-          message: 'Email is already exist',
-          error: error.detail,
-        });
+        throw new EmailAlreadyTaken();
       }
 
       throw new InternalServerErrorException();
