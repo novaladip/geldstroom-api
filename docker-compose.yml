@@ -13,11 +13,12 @@ services:
       
   db:
     container_name: db
+    image: posgress:11.6-alpine
     restart: always
     image: postgres
     environment:
-      POSTGRES_PASSWORD: getshitdone
-      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: <db_password>
+      POSTGRES_USER: <db_user>
       POSTGRES_DB: geldstroom
     ports: 
       - '5432:5432' 
