@@ -15,7 +15,7 @@ export class UserRepository extends Repository<User> {
     try {
       const { email, password } = registerDto;
       const generatedToken = cryptoRandomString({
-        length: 20,
+        length: 50,
         type: 'url-safe',
       });
       const user = new User();

@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import * as cryptoRandomString from 'crypto-random-string';
 
 import { UserRepository } from './user.repository';
 import { JwtPayload } from './jwt-payload.interface';
@@ -95,6 +96,14 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException('Invalid token');
     }
+
+    if (!user.token) {
+      user.token = cryptoRandomString({
+        length: 50,
+        type: 'url-safe',
+      });
+    }
+
     await this.sendEmailService.emailVerification(user.token, user.email);
   }
 
