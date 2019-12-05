@@ -1,6 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import * as cryptoRandomString from 'crypto-random-string';
 
 import { User } from './user.entity';
 import { RegisterDto } from './dto/register.dto';
@@ -10,14 +11,20 @@ import { EmailAlreadyTaken } from '../core';
 export class UserRepository extends Repository<User> {
   private logger = new Logger('UserRepository');
 
-  async registerUser(registerDto: RegisterDto): Promise<void> {
+  async registerUser(registerDto: RegisterDto): Promise<User> {
     try {
       const { email, password } = registerDto;
+      const generatedToken = cryptoRandomString({
+        length: 20,
+        type: 'url-safe',
+      });
       const user = new User();
       user.email = email;
       user.password = await this.hashPassword(password);
       user.joinDate = new Date();
+      user.token = generatedToken;
       await user.save();
+      return user;
     } catch (error) {
       this.logger.error(
         `Failed to registering user with data: ${JSON.stringify(registerDto)}`,

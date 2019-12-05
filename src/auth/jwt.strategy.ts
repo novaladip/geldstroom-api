@@ -6,6 +6,7 @@ import * as config from 'config';
 
 import { UserRepository } from './user.repository';
 import { JwtPayload } from './jwt-payload.interface';
+import { EmailNotVerfied } from '../core';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -25,6 +26,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    if (!user.isVerified) {
+      throw new EmailNotVerfied();
+    }
+
     return { id, email: user.email };
   }
 }

@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import * as config from 'config';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserRepository } from './user.repository';
 import { JwtStrategy } from './jwt.strategy';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { SendEmailModule } from '../send-email/send-email.module';
 
 const jwtConfig = config.get('jwt');
 
@@ -21,6 +22,7 @@ const jwtConfig = config.get('jwt');
       },
     }),
     TypeOrmModule.forFeature([UserRepository]),
+    SendEmailModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

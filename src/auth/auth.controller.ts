@@ -1,10 +1,21 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Query,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiUseTags } from '@nestjs/swagger';
 
-import { RegisterDto } from './dto/register.dto';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { LoginResponse } from './dto/login-response.dto';
+import {
+  VerifyEmailDto,
+  LoginDto,
+  LoginResponse,
+  RegisterDto,
+  ResendEmailVerifyDto,
+} from './dto';
 
 @ApiUseTags('Auth')
 @Controller('auth')
@@ -24,5 +35,19 @@ export class AuthController {
   @Post('/login')
   loginUser(@Body() loginDto: LoginDto): Promise<{ accessToken: string }> {
     return this.authService.loginUser(loginDto);
+  }
+
+  @ApiOkResponse({})
+  @Get('verify/email')
+  verifyEmail(
+    @Query(ValidationPipe) verifyEmailDto: VerifyEmailDto,
+  ): Promise<void> {
+    return this.authService.verifyEmail(verifyEmailDto);
+  }
+
+  @ApiOkResponse({})
+  @Post('verify/email/resend')
+  resendVerifyEmail(@Body() resendVerifyEmailDto: ResendEmailVerifyDto) {
+    return this.authService.resendEmailVerify(resendVerifyEmailDto);
   }
 }
