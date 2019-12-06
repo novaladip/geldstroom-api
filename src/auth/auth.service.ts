@@ -12,7 +12,7 @@ import * as cryptoRandomString from 'crypto-random-string';
 
 import { UserRepository } from './user.repository';
 import { JwtPayload } from './jwt-payload.interface';
-import { EmailNotVerfied } from '../core';
+import { EmailNotVerfied, EmailAlreadyVerified } from '../core';
 import {
   VerifyEmailDto,
   RegisterDto,
@@ -95,6 +95,10 @@ export class AuthService {
 
     if (!user) {
       throw new NotFoundException('Invalid token');
+    }
+
+    if (user.isVerified) {
+      throw new EmailAlreadyVerified();
     }
 
     if (!user.token) {

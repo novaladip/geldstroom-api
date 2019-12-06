@@ -3,6 +3,10 @@
 /node_modules
 /data/certbot
 
+#config
+/config/production.yml
+./docker-compose.yml
+
 # Logs
 logs
 *.log
