@@ -30,7 +30,7 @@
     "@sendgrid/mail": "^6.4.0",
     "@types/nodemailer": "^6.2.2",
     "bcryptjs": "^2.4.3",
-    "class-transformer": "^0.2.3",
+    "class-transformer": "^0.3.1",
     "class-validator": "^0.9.1",
     "config": "^3.2.2",
     "crypto-random-string": "^3.0.1",
